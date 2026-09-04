@@ -461,3 +461,126 @@ PPO 训练时动作是随机采样，不是 deterministic 复现 BC，所以初�
 - Python 缓存
 
 这样仓库适合作为教学框架，训练结果由每个学习者本地生成。
+
+## 18. 扩展任务：直立遥控走路
+
+自动扶正学会以后，可以把任务换成“直立起步，然后按遥控指令移动”。这个任务对应：
+
+```text
+env/walking_env.py
+train_walking.py
+evaluate_walking.py
+scripts/walking_smoke_tests.py
+```
+
+### 18.1 WalkingEnv 和 SelfRightingEnv 的区别
+
+`SelfRightingEnv`：
+
+- reset 时随机倒地；
+- reward 主要鼓励站起来、伸直、稳定；
+- episode 成功后终止。
+
+`WalkingEnv`：
+
+- reset 时从直立状态开始；
+- 输入里额外加入遥控速度指令和 gait phase；
+- reward 鼓励平面速度跟踪指令；
+- 如果明显倒下则终止。
+
+walking 策略输入是 12 维：
+
+```text
+[
+  sin(theta_x), cos(theta_x),
+  sin(theta_y), cos(theta_y),
+  omega_x, omega_y,
+  joint_x, joint_y,
+  command_vx, command_vy,
+  sin(phase), cos(phase)
+]
+```
+
+其中：
+
+- 前 8 维仍然是可部署传感器信息；
+- `command_vx/command_vy` 是遥控器给的速度指令；
+- `phase` 是控制器内部的周期信号，相当于给两舵机一个可学习的节律参考。
+
+注意：平板真实位置和速度不喂给 policy，只在仿真 reward 中使用。
+
+### 18.2 训练 walking
+
+先做 smoke test：
+
+```bash
+python scripts/walking_smoke_tests.py
+```
+
+从零训练：
+
+```bash
+python train_walking.py ^
+  --total-timesteps 3000000 ^
+  --save-path runs/ppo_walking ^
+  --checkpoint-dir runs/checkpoints_walking ^
+  --checkpoint-freq 10000 ^
+  --device cuda
+```
+
+可调参数：
+
+```bash
+python train_walking.py --command-speed 0.05
+python train_walking.py --command-speed 0.10
+python train_walking.py --command-change-seconds 3.0
+python train_walking.py --hidden-sizes 256 256
+```
+
+建议先用小速度，例如 `0.05 m/s` 或 `0.08 m/s`。如果速度指令太大，两个舵机可能很难产生稳定位移。
+
+### 18.3 可视化遥控
+
+训练出 checkpoint 后：
+
+```bash
+python evaluate_walking.py --model-path runs/checkpoints_walking/ppo_walking_100000_steps.zip
+```
+
+按键：
+
+- `W/S`：前进/后退；
+- `A/D`：左移/右移；
+- `C`：停止；
+- `R`：reset；
+- `Space`：暂停。
+
+### 18.4 walking reward
+
+walking reward 的核心是速度跟踪：
+
+```text
+xy_velocity 接近 command_velocity -> 奖励高
+```
+
+同时保留：
+
+- 直立奖励；
+- 倾角惩罚；
+- 角速度惩罚；
+- 舵机速度惩罚；
+- action 幅度和变化惩罚；
+- 倒下终止惩罚。
+
+### 18.5 重要限制
+
+当前机器人只有两个舵机，且没有轮子或腿。它的“走路”更接近通过摆杆和地面摩擦产生小范围挪动，不应期待像四足机器人一样稳定、快速地行走。
+
+如果训练不出明显位移，优先尝试：
+
+- 降低 `--command-speed`；
+- 增加 episode 时长；
+- 调整杆尖和平板摩擦；
+- 增大舵机力矩限制；
+- 加入更多可控自由度；
+- 设计专门的节律动作或示教轨迹。

@@ -1,6 +1,6 @@
 # Handy Embodied Intelligence
 
-一个面向新手的 MuJoCo + Gymnasium + Stable-Baselines3 教学项目：从零搭建一个“自动扶正平板机器人”，支持键盘示教、行为克隆初始化、PPO 强化学习训练、TensorBoard 可视化和权重回放。
+一个面向新手的 MuJoCo + Gymnasium + Stable-Baselines3 教学项目：从零搭建一个“自动扶正平板机器人”，支持键盘示教、行为克隆初始化、PPO 强化学习训练、TensorBoard 可视化和权重回放。项目还包含第二个任务：机器人从直立状态开始，按前后左右遥控指令学习移动。
 
 完整教程见 [docs/tutorial_zh.md](docs/tutorial_zh.md)。
 
@@ -27,7 +27,9 @@
 config.py                     # 机械、控制、reset、reward 集中配置
 env/self_righting_env.py      # Gymnasium 环境
 train.py                      # PPO 训练入口
+train_walking.py              # 直立遥控走路任务训练入口
 evaluate.py                   # 加载权重并打开 MuJoCo viewer
+evaluate_walking.py           # 键盘遥控速度指令并可视化 walking policy
 scripts/view_model.py         # 键盘遥控环境
 scripts/record_demo.py        # 键盘示教并保存 obs/action 数据
 scripts/inspect_demo.py       # 查看示教数据质量
@@ -60,6 +62,7 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 
 ```bash
 python scripts/physics_smoke_tests.py
+python scripts/walking_smoke_tests.py
 ```
 
 打开键盘遥控：
@@ -156,3 +159,30 @@ python train.py ^
 - 默认网络：actor/critic 各 3 层 512 hidden，总参数约 1.06M
 
 更多 reward、success、调参和教学解释见 [docs/tutorial_zh.md](docs/tutorial_zh.md)。
+
+## 直立遥控走路任务
+
+从直立状态开始训练前后左右速度指令跟踪：
+
+```bash
+python train_walking.py ^
+  --total-timesteps 3000000 ^
+  --save-path runs/ppo_walking ^
+  --checkpoint-dir runs/checkpoints_walking ^
+  --checkpoint-freq 10000 ^
+  --device cuda
+```
+
+加载 walking 权重并用键盘发速度指令：
+
+```bash
+python evaluate_walking.py --model-path runs/checkpoints_walking/ppo_walking_100000_steps.zip
+```
+
+walking viewer 按键：
+
+- `W/S`：前进/后退
+- `A/D`：左移/右移
+- `C`：停止
+- `R`：reset
+- `Space`：暂停/继续
