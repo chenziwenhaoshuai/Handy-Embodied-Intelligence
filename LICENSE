@@ -1,0 +1,40 @@
+MIT License
+
+Copyright (c) 2026 EEI-RL contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------------------------------
+
+注意 / NOTICE
+
+上面这份 MIT 许可**只覆盖本项目新增的代码**：
+
+  rl/train_pure_rl.py
+  rl/watch_latest.py
+  rl/verify_pure_rl.py
+  rl/export_policy_header.py 的修改部分
+  firmware/ 下的固件改造部分
+  reproduce.py
+  docs/
+
+上游项目 homemadegarbage/SelfRisingRobot 的文件（`rl/env/robo1.xml`、
+`rl/env/robo1_env.py`、`rl/env/assets/*.stl`、`rl/eval_robo1_policy.py`、
+`rl/play_robo1_policy.py`）**没有附带任何许可证**，版权默认归原作者所有。
+发布前请先阅读 NOTICE.md 并取得原作者许可，或改为不随包分发这些文件。

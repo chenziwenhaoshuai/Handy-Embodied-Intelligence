@@ -1,19 +1,21 @@
+# Python
 __pycache__/
 *.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-
-.env
 .venv/
 venv/
 
-runs/
-data/demos/*.npz
+# 训练产物
+rl/ckpt/
+rl/ckpt_archive/
+rl/tb/
+rl/runs/
 *.log
 
-assets/self_righting.xml
+# 导出结果（打包时会把最终那份放进 firmware/main/）
+rl/verify_report.json
 
-.idea/
+# 编辑器
 .vscode/
+.idea/
+.DS_Store
 Thumbs.db

@@ -1,0 +1,9 @@
+build/
+sdkconfig
+sdkconfig.old
+dependencies.lock
+managed_components/
+debug.log
+
+# 自己的 Wi-Fi 凭据不进版本库
+main/wifi_config.h
