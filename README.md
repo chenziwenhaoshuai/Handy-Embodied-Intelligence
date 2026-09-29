@@ -14,9 +14,7 @@
 | `firmware/` | **固件**：ESP32-S3（ESP-IDF），内置起立策略 + IMU 机身坐标换算 + 网页控制台 | [firmware/README.md](firmware/README.md)、[firmware/开发说明.md](firmware/开发说明.md) |
 | `docs/` | 从零训练起立的完整实验记录（配方、两个奖励陷阱、全部实测数字） | [docs/训练报告.md](docs/训练报告.md) |
 
-> ⚠️ 发布前请先读 [NOTICE.md](NOTICE.md)：上游 `SelfRisingRobot` 仓库**没有 LICENSE**，
-> 本仓库里的 `rl/env/`（MuJoCo 模型与 STL）以及两个 eval/play 脚本来自上游，
-> 再分发前建议先联系原作者取得许可。
+
 
 ---
 
